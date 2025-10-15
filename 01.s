@@ -1,3 +1,5 @@
+# 1. A imobiliária Imóbilis vende apenas terrenos retangulares. Faça um algoritmo para ler as dimensões de um terreno e depois exibir a área do terreno.
+
 .data
 msg1: .asciiz "\nDigite o valor da base do terreno em metros: "
 msg2: .asciiz "\nDigite o valor da altura do terreno em metros: "
