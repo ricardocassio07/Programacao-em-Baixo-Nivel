@@ -1,13 +1,13 @@
 .data
-msgContexto: .asciiz "\nSabendo que: Ax² + Bx + C = 0"
+    msgContexto: .asciiz "\nSabendo que: Ax² + Bx + C = 0"
 
-msgDigiteA: .asciiz "\nDigite o valor do coeficiente 'A': "
-msgDigiteB: .asciiz "\nDigite o valor do coeficiente 'B': "
-msgDigiteC: .asciiz "\nDigite o valor do coeficiente 'C': "
+    msgDigiteA: .asciiz "\nDigite o valor do coeficiente 'A': "
+    msgDigiteB: .asciiz "\nDigite o valor do coeficiente 'B': "
+    msgDigiteC: .asciiz "\nDigite o valor do coeficiente 'C': "
 
-msgDeltaPositivo: .asciiz "\nA equação possui duas raizes reais!"
-msgDeltaNulo: .asciiz "\nA equação possui uma raiz real!"
-msgDeltaNegativo: .asciiz "\nA equação não possui raízes reais!"
+    msgDeltaPositivo: .asciiz "\nA equação possui duas raizes reais!"
+    msgDeltaNulo: .asciiz "\nA equação possui uma raiz real!"
+    msgDeltaNegativo: .asciiz "\nA equação não possui raízes reais!"
 
 .text
 main:
@@ -24,7 +24,7 @@ main:
     syscall # Executar
 
     # Ler:
-    li $v0, 5 # Execução 5: leitura de Caracteres
+    li $v0, 5 # Execução 5: leitura de Inteiro
     syscall # Executar
     move $t0, $v0
 
@@ -35,7 +35,7 @@ main:
     syscall # Executar
 
     # Ler:
-    li $v0, 5 # Execução 5: leitura de Caracteres
+    li $v0, 5 # Execução 5: leitura de Inteiro
     syscall # Executar
     move $t1, $v0
 
@@ -46,7 +46,7 @@ main:
     syscall # Executar
 
     # Ler:
-    li $v0, 5 # Execução 5: leitura de Caracteres
+    li $v0, 5 # Execução 5: leitura de Inteiro
     syscall # Executar
     move $t2, $v0
 

@@ -1,9 +1,9 @@
 .data:
-msgDigiteSalario: .asciiz "\nDigite o valor de seu salário R$: "
+    msgDigiteSalario: .asciiz "\nDigite o valor de seu salário R$: "
 
-msgErro: .asciiz "\nVoce inseriu alguma informacao invalida... Por favor, insira todos os dados novamente!"
+    msgErro: .asciiz "\nVoce inseriu alguma informacao invalida... Por favor, insira todos os dados novamente!"
 
-msgMostraResultado: .asciiz "\nO salário do funcionário com acrescimo de 25% é R$ "
+    msgMostraResultado: .asciiz "\nO salário do funcionário com acrescimo de 25% é R$ "
 
 .text
 main:

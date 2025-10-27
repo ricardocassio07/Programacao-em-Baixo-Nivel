@@ -1,13 +1,13 @@
 .data
-msgDigiteMesNas: .asciiz "\nDigite o mes de nascimento: "
-msgDigiteAnoNas: .asciiz "\nDigite o ano de nascimento: "
-msgDigiteMesAtual: .asciiz "\nDigite o mes atual: "
-msgDigiteAnoAtual: .asciiz "\nDigite o ano atual: "
+    msgDigiteMesNas: .asciiz "\nDigite o mes de nascimento: "
+    msgDigiteAnoNas: .asciiz "\nDigite o ano de nascimento: "
+    msgDigiteMesAtual: .asciiz "\nDigite o mes atual: "
+    msgDigiteAnoAtual: .asciiz "\nDigite o ano atual: "
 
-msgErro: .asciiz "\nVoce inseriu alguma informacao invalida... Por favor, insira todos os dados novamente!"
+    msgErro: .asciiz "\nVoce inseriu alguma informacao invalida... Por favor, insira todos os dados novamente!"
 
-msgResultado: .asciiz "\nA pessoa tem "
-msgResultado2: .asciiz " meses de vida!"
+    msgResultado: .asciiz "\nA pessoa tem "
+    msgResultado2: .asciiz " meses de vida!"
 
 .text
 main:
