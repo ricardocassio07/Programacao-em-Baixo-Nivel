@@ -11,9 +11,18 @@
 
     msgTodosDigitosInseridos: .asciiz "\n-> TODOS OS 16 DIGITOS JA FORAM INSERIDOS! <-"
 
-    msgNumIgualZero: .asciiz "LEMBRE-SE: O NUMERO DEVE SER DIFERENTE DE ZERO!!!"
+    msgNumIgualZero: .asciiz "\nLEMBRE-SE: O NUMERO DEVE SER DIFERENTE DE ZERO!!!"
 
-    msgDigitoInvalido: .asciiz "DIGITE: 0, 1, 2, 3, 4, 5, 6, 7, 8 OU 9!!!"
+    msgDigitoInvalido: .asciiz "\nDIGITE: 0, 1, 2, 3, 4, 5, 6, 7, 8 OU 9!!!"
+
+    msgEhOctal1: .asciiz "\nO número  ( "
+    msgEhOctal2: .asciiz " ) eh octal!!!"
+
+    msgNaoEhOctal1: .asciiz "\nO número  ( "
+    msgNaoEhOctal2: .asciiz " ) nao eh octal!!!"
+
+    msgDesejo: .asciiz "\nVoce deseja verificar mais algum numero?\nDigite:\n1- Sim\n2- Nao\n-> "
+
 
 .text
 main:
@@ -113,8 +122,9 @@ main:
                         li $v0, 5 # Execução 5: Leitura de inteiro
                         syscall # Executar
 
-                    # Caso o valor inserido seja maior que 9, ele é inválido:
+                    # Caso o valor inserido seja maior que 9 ou menor que 0, ele é inválido:
                         bgt $v0, 9, digitoInvalido
+                        blt $v0, $zero, digito
 
                         # Adicionar dígito ao seu devido registrador:
                         # Caso seja o 1º dígito inserido deve colocá-lo em $t1:
@@ -220,9 +230,7 @@ main:
                     j desejo
 
                 primeiraOpcao:
-                    # Caso o número tenha mais digitos, o último digitado não pode ser negativo:
-                        blt $s7, $zero, lerNumero
-                    # Caso o último dígito não seja negativo, vamos verificar quantos digitos o usuário já digitou... caso for menos que 16, permite que ele insira o próximo:
+                    # Caso o número tenha mais digitos, vamos verificar quantos digitos o usuário já digitou... caso for menos que 16, permite que ele insira o próximo:
                         blt $t0, 16, insercao
                     # Caso já inseriu todos os dígitos, avisa ao usuário e parte para a próxima etapa:
                         # Mensagem:
@@ -230,29 +238,217 @@ main:
                         la $a0, msgTodosDigitosInseridos # Colocar msgTodosDigitosInseridos em $a0
                         syscall # Executar
 
-    
-    analisarNumero:
-    # Verificar se o número digitado pelo usuário é igual 0. Para isso, vamos somar o valor de todos os dígitos... caso ele seja igual a zero, vamos pedir para o usuário digitar novamente o número:
-    li $s7, 0
-    add $s7, $t1, $t2
-    add $s7, $s7, $t3
-    add $s7, $s7, $t4
-    add $s7, $s7, $t5
-    add $s7, $s7, $t6
-    add $s7, $s7, $t7
-    add $s7, $s7, $t8
-    add $s7, $s7, $t9
-    add $s7, $s7, $s0
-    add $s7, $s7, $s1
-    add $s7, $s7, $s2
-    add $s7, $s7, $s3
-    add $s7, $s7, $s4
-    add $s7, $s7, $s5
-    add $s7, $s7, $s6
-    # Verificar se a soma é igual a zero:
-    beq $s7, $zero, numIgualZero
+        
+        analisarNumero:
+        # Verificar se o número digitado pelo usuário é igual 0. Para isso, vamos somar o valor de todos os dígitos... caso ele seja igual a zero, vamos pedir para o usuário digitar novamente o número:
+        li $s7, 0
+        add $s7, $t1, $t2
+        add $s7, $s7, $t3
+        add $s7, $s7, $t4
+        add $s7, $s7, $t5
+        add $s7, $s7, $t6
+        add $s7, $s7, $t7
+        add $s7, $s7, $t8
+        add $s7, $s7, $t9
+        add $s7, $s7, $s0
+        add $s7, $s7, $s1
+        add $s7, $s7, $s2
+        add $s7, $s7, $s3
+        add $s7, $s7, $s4
+        add $s7, $s7, $s5
+        add $s7, $s7, $s6
+        # Verificar se a soma é igual a zero:
+        beq $s7, $zero, numIgualZero
 
-    # Verificar se o número digitaddo pelo usuário é octal:
+        # Verificar se o número digitaddo pelo usuário é octal:
+            # Caso qualquer dígito inserido pelo usuário seja maior que 7, o número não é octal:
+            bgt $t1, 7, naoEhOctal
+            bgt $t2, 7, naoEhOctal
+            bgt $t3, 7, naoEhOctal
+            bgt $t4, 7, naoEhOctal
+            bgt $t5, 7, naoEhOctal
+            bgt $t6, 7, naoEhOctal
+            bgt $t7, 7, naoEhOctal
+            bgt $t8, 7, naoEhOctal
+            bgt $t9, 7, naoEhOctal
+            bgt $s0, 7, naoEhOctal
+            bgt $s1, 7, naoEhOctal
+            bgt $s2, 7, naoEhOctal
+            bgt $s3, 7, naoEhOctal
+            bgt $s4, 7, naoEhOctal
+            bgt $s5, 7, naoEhOctal
+            bgt $s6, 7, naoEhOctal
+
+        # Caso passe por todas as verificações, o número é octal:
+        ehOctal:
+            # Início da Mensagem:
+            li $v0, 4 # Execução 4: Escrita de caracteres
+            la $a0, msgEhOctal1 # Colocar msgEhOctal1 em $a0
+            syscall # Executar
+            # Mostrar número:
+                # 16º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $s6 # Colocar o valor de $s6 (valor 16º dígito do número) em $a0
+                syscall # Executar
+                # 15º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $s5 # Colocar o valor de $s5 (valor 15º dígito do número) em $a0
+                syscall # Executar
+                # 14º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $s4 # Colocar o valor de $s4 (valor 14º dígito do número) em $a0
+                syscall # Executar
+                # 13º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $s3 # Colocar o valor de $s3 (valor 13º dígito do número) em $a0
+                syscall # Executar
+                # 12º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $s2 # Colocar o valor de $s2 (valor 12º dígito do número) em $a0
+                syscall # Executar
+                # 11º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $s1 # Colocar o valor de $s1 (valor 11º dígito do número) em $a0
+                syscall # Executar
+                # 10º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $s0 # Colocar o valor de $s0 (valor 10º dígito do número) em $a0
+                syscall # Executar
+                # 9º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $t9 # Colocar o valor de $t9 (valor 9º dígito do número) em $a0
+                syscall # Executar
+                # 8º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $t8 # Colocar o valor de $t8 (valor 8º dígito do número) em $a0
+                syscall # Executar
+                # 7º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $t7 # Colocar o valor de $t7 (valor 7º dígito do número) em $a0
+                syscall # Executar
+                # 6º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $t6 # Colocar o valor de $t6 (valor 6º dígito do número) em $a0
+                syscall # Executar
+                # 5º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $t5 # Colocar o valor de $t5 (valor 5º dígito do número) em $a0
+                syscall # Executar
+                # 4º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $t4 # Colocar o valor de $t4 (valor 4º dígito do número) em $a0
+                syscall # Executar
+                # 3º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $t3 # Colocar o valor de $t3 (valor 3º dígito do número) em $a0
+                syscall # Executar
+                # 2º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $t2 # Colocar o valor de $t2 (valor 2º dígito do número) em $a0
+                syscall # Executar
+                # 1º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $t1 # Colocar o valor de $t1 (valor 1º dígito do número) em $a0
+                syscall # Executar
+            # Final da Mensagem:
+            li $v0, 4 # Execução 4: Escrita de caracteres
+            la $a0, msgEhOctal2 # Colocar msgEhOctal2 em $a0
+            syscall # Executar
+        
+        # Caso ele não passe em todas as verificações, ele não é octal:
+        naoEhOctal:
+            # Início da Mensagem:
+            li $v0, 4 # Execução 4: Escrita de caracteres
+            la $a0, msgNaoEhOctal1 # Colocar msgNaoEhOctal1 em $a0
+            syscall # Executar
+            # Mostrar número:
+                # 16º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $s6 # Colocar o valor de $s6 (valor 16º dígito do número) em $a0
+                syscall # Executar
+                # 15º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $s5 # Colocar o valor de $s5 (valor 15º dígito do número) em $a0
+                syscall # Executar
+                # 14º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $s4 # Colocar o valor de $s4 (valor 14º dígito do número) em $a0
+                syscall # Executar
+                # 13º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $s3 # Colocar o valor de $s3 (valor 13º dígito do número) em $a0
+                syscall # Executar
+                # 12º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $s2 # Colocar o valor de $s2 (valor 12º dígito do número) em $a0
+                syscall # Executar
+                # 11º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $s1 # Colocar o valor de $s1 (valor 11º dígito do número) em $a0
+                syscall # Executar
+                # 10º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $s0 # Colocar o valor de $s0 (valor 10º dígito do número) em $a0
+                syscall # Executar
+                # 9º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $t9 # Colocar o valor de $t9 (valor 9º dígito do número) em $a0
+                syscall # Executar
+                # 8º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $t8 # Colocar o valor de $t8 (valor 8º dígito do número) em $a0
+                syscall # Executar
+                # 7º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $t7 # Colocar o valor de $t7 (valor 7º dígito do número) em $a0
+                syscall # Executar
+                # 6º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $t6 # Colocar o valor de $t6 (valor 6º dígito do número) em $a0
+                syscall # Executar
+                # 5º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $t5 # Colocar o valor de $t5 (valor 5º dígito do número) em $a0
+                syscall # Executar
+                # 4º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $t4 # Colocar o valor de $t4 (valor 4º dígito do número) em $a0
+                syscall # Executar
+                # 3º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $t3 # Colocar o valor de $t3 (valor 3º dígito do número) em $a0
+                syscall # Executar
+                # 2º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $t2 # Colocar o valor de $t2 (valor 2º dígito do número) em $a0
+                syscall # Executar
+                # 1º dígito:
+                li $v0, 1 # Execução 1: Escrita de inteiro
+                move $a0, $t1 # Colocar o valor de $t1 (valor 1º dígito do número) em $a0
+                syscall # Executar
+            # Final da Mensagem:
+            li $v0, 4 # Execução 4: Escrita de caracteres
+            la $a0, msgNaoEhOctal2 # Colocar msgNaoEhOctal2 em $a0
+            syscall # Executar
+        
+        # Verificar se o usuário deseja verificar mais algum número:
+        desejo:
+            # Mensagem:
+            li $v0, 4 # Execução 4: Escrita de caracteres
+            la $a0, msgDesejo # Colocar msgDesejo em $a0
+            syscall # Executar
+            # Leitura:
+            li $v0, 5 # Execução 5: Leitura de inteiro
+            syscall # Executar
+            
+            # Verificar desejo do usuário:
+            beq $v0, 1
+            beq $v0, 2
+            j desejo
+
+            
+
+            
 
 
 
