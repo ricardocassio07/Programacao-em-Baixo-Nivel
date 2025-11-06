@@ -7,7 +7,7 @@
     msgInserirIninio: .asciiz "\nDigite o "
     msgInserirFinal: .asciiz "º digito do numero!\n->"
 
-    msgDesejo: .asciiz "\nO numero possui mais algum digito?\nDigite:\n1- Sim\n2- Não\n-> "
+    msgDesejoAddCaractere: .asciiz "\nO numero possui mais algum digito?\nDigite:\n1- Sim\n2- Não\n-> "
 
     msgTodosDigitosInseridos: .asciiz "\n-> TODOS OS 16 DIGITOS JA FORAM INSERIDOS! <-"
 
@@ -15,13 +15,15 @@
 
     msgDigitoInvalido: .asciiz "\nDIGITE: 0, 1, 2, 3, 4, 5, 6, 7, 8 OU 9!!!"
 
-    msgEhOctal1: .asciiz "\nO número  ( "
-    msgEhOctal2: .asciiz " ) eh octal!!!"
+    msgEhOctal1: .asciiz "\nO NUMERO ("
+    msgEhOctal2: .asciiz ") EH OCTAL!!!\n"
 
-    msgNaoEhOctal1: .asciiz "\nO número  ( "
-    msgNaoEhOctal2: .asciiz " ) nao eh octal!!!"
+    msgNaoEhOctal1: .asciiz "\nO NUMERO ("
+    msgNaoEhOctal2: .asciiz ") NAO EH OCTAL!!!\n"
 
-    msgDesejo: .asciiz "\nVoce deseja verificar mais algum numero?\nDigite:\n1- Sim\n2- Nao\n-> "
+    msgDesejoContinuar: .asciiz "\nVoce deseja verificar mais algum numero?\nDigite:\n1- Sim\n2- Nao\n-> "
+
+    msgDespedida: .asciiz "\nTudo bem... foi bom ter voce conosco!!! (^_^)"
 
 
 .text
@@ -124,7 +126,7 @@ main:
 
                     # Caso o valor inserido seja maior que 9 ou menor que 0, ele é inválido:
                         bgt $v0, 9, digitoInvalido
-                        blt $v0, $zero, digito
+                        blt $v0, $zero, digitoInvalido
 
                         # Adicionar dígito ao seu devido registrador:
                         # Caso seja o 1º dígito inserido deve colocá-lo em $t1:
@@ -163,60 +165,60 @@ main:
                         # Colocando nos registradores:
                         digitoUm:
                             move $t1, $v0
-                            j desejo
+                            j desejoAddCaractere
                         digitoDois:
                             move $t2, $v0
-                            j desejo
+                            j desejoAddCaractere
                         digitoTres:
                             move $t3, $v0
-                            j desejo
+                            j desejoAddCaractere
                         digitoQuatro:
                             move $t4, $v0
-                            j desejo
+                            j desejoAddCaractere
                         digitoCinco:
                             move $t5, $v0
-                            j desejo
+                            j desejoAddCaractere
                         digitoSeis:
                             move $t6, $v0
-                            j desejo
+                            j desejoAddCaractere
                         digitoSete:
                             move $t7, $v0
-                            j desejo
+                            j desejoAddCaractere
                         digitoOito:
                             move $t8, $v0
-                            j desejo
+                            j desejoAddCaractere
                         digitoNove:
                             move $t9, $v0
-                            j desejo
+                            j desejoAddCaractere
                         digitoDez:
                             move $s0, $v0
-                            j desejo
+                            j desejoAddCaractere
                         digitoOnze:
                             move $s1, $v0
-                            j desejo
+                            j desejoAddCaractere
                         digitoDoze:
                             move $s2, $v0
-                            j desejo
+                            j desejoAddCaractere
                         digitoTreze:
                             move $s3, $v0
-                            j desejo
+                            j desejoAddCaractere
                         digitoQuatorze:
                             move $s4, $v0
-                            j desejo
+                            j desejoAddCaractere
                         digitoQuinze:
                             move $s5, $v0
-                            j desejo
+                            j desejoAddCaractere
                         digitoDezesseis:
                             move $s6, $v0
-                            j desejo
+                            j desejoAddCaractere
 
             # Verificar se serão inseridos mais digitos:
-            desejo:
+            desejoAddCaractere:
                 # Colocando o último valor inserido pelo usuário em $s7 para futura verificação do seu valor:
                 add $s7, $v0, $zero
                 # Mensagem:
                     li $v0, 4 # Execução 4: Escrita de caracteres
-                    la $a0, msgDesejo # Colocar msgDesejo em $a0
+                    la $a0, msgDesejoAddCaractere # Colocar msgDesejoAddCaractere em $a0
                     syscall # Executar
                 # Leitura:
                     li $v0, 5 # Execução 5: Leitura de inteiro
@@ -227,7 +229,7 @@ main:
                 # Caso o usuário escolha a segunda opção:
                     beq $v0, 2, analisarNumero
                 # Caso ele não escolha nenhuma das duas opções:
-                    j desejo
+                    j desejoAddCaractere
 
                 primeiraOpcao:
                     # Caso o número tenha mais digitos, vamos verificar quantos digitos o usuário já digitou... caso for menos que 16, permite que ele insira o próximo:
@@ -354,6 +356,8 @@ main:
             li $v0, 4 # Execução 4: Escrita de caracteres
             la $a0, msgEhOctal2 # Colocar msgEhOctal2 em $a0
             syscall # Executar
+            # Pula para a pergunta:
+            j desejoContinuar
         
         # Caso ele não passe em todas as verificações, ele não é octal:
         naoEhOctal:
@@ -432,26 +436,27 @@ main:
             syscall # Executar
         
         # Verificar se o usuário deseja verificar mais algum número:
-        desejo:
+        desejoContinuar:
             # Mensagem:
             li $v0, 4 # Execução 4: Escrita de caracteres
-            la $a0, msgDesejo # Colocar msgDesejo em $a0
+            la $a0, msgDesejoContinuar # Colocar msgDesejoContinuar em $a0
             syscall # Executar
             # Leitura:
             li $v0, 5 # Execução 5: Leitura de inteiro
             syscall # Executar
             
             # Verificar desejo do usuário:
-            beq $v0, 1
-            beq $v0, 2
-            j desejo
+            beq $v0, 1, enquanto
+            beq $v0, 2, mensagemDespedida
+            j desejoContinuar
 
-            
-
-            
-
-
-
+    
+    mensagemDespedida:
+        # Mensagem:
+        li $v0, 4 # Execução 4: Escrita de caracteres
+        la $a0, msgDespedida # Colocar msgDespedida em $a0
+        syscall # Executar
+    
 
     # Finalizar programa:
     finalizar:
